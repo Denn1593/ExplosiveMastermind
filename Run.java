@@ -197,7 +197,7 @@ public class Run extends Application
                   tlboom.getKeyFrames().addAll(boomkf1, boomkf12);
                   tlboom.play();
                   boom.setTranslateX(rGen.nextInt(300) - 314);
-                  boom.setTranslateY(rGen.nextInt(100) - 100);
+                  boom.setTranslateY(rGen.nextInt(300) - 314);
                   p.getChildren().add(boom);
                } 
             }    

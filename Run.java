@@ -5,6 +5,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.animation.Animation;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.image.Image;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.input.KeyEvent;
@@ -23,6 +26,7 @@ import java.util.Random;
 
 public class Run extends Application
 {
+   private Image boomImg = new Image(Run.class.getResource("/ex.png").toString());
    private boolean won = false;
    private int pieceNumber = 0;
    private int pieceIndex = 0;
@@ -174,6 +178,28 @@ public class Run extends Application
                pieceIndex = 0;
                isAKey = true;
                won = false;
+               for(int i = 0; i < 4; i++)
+               {
+                  ImageView boom = new ImageView(boomImg);
+                  final Timeline tlboom = new Timeline();
+                  tlboom.setCycleCount(1);
+                  tlboom.setAutoReverse(false);
+                  final KeyValue boomRotate = new KeyValue(boom.rotateProperty(), 0);
+                  final KeyValue alpha = new KeyValue(boom.opacityProperty(), 1);
+                  final KeyValue scaX = new KeyValue(boom.scaleXProperty(), 0.5);
+                  final KeyValue scaY = new KeyValue(boom.scaleYProperty(), 0.5);
+                  final KeyFrame boomkf1 = new KeyFrame(Duration.millis(0), boomRotate, alpha, scaX, scaY);
+                  final KeyValue boomRotate2 = new KeyValue(boom.rotateProperty(), rGen.nextInt(100) - 50);
+                  final KeyValue scaX1 = new KeyValue(boom.scaleXProperty(), 1);
+                  final KeyValue scaY1 = new KeyValue(boom.scaleYProperty(), 1);
+                  final KeyValue alpha2 = new KeyValue(boom.opacityProperty(), 0);
+                  final KeyFrame boomkf12 = new KeyFrame(Duration.millis(600), boomRotate2, alpha2, scaX1, scaY1);
+                  tlboom.getKeyFrames().addAll(boomkf1, boomkf12);
+                  tlboom.play();
+                  boom.setTranslateX(rGen.nextInt(300) - 314);
+                  boom.setTranslateY(rGen.nextInt(100) - 100);
+                  p.getChildren().add(boom);
+               } 
             }    
             if(ke.getCode() != KeyCode.N && isAKey == true && won == false)
             {  
@@ -236,7 +262,30 @@ public class Run extends Application
                else
                {
                   lose.play();
-               }   
+               }  
+               
+               for(int i = 0; i < 4; i++)
+               {
+                  ImageView boom = new ImageView(boomImg);
+                  final Timeline tlboom = new Timeline();
+                  tlboom.setCycleCount(1);
+                  tlboom.setAutoReverse(false);
+                  final KeyValue boomRotate = new KeyValue(boom.rotateProperty(), 0);
+                  final KeyValue alpha = new KeyValue(boom.opacityProperty(), 1);
+                  final KeyValue scaX = new KeyValue(boom.scaleXProperty(), 0.5);
+                  final KeyValue scaY = new KeyValue(boom.scaleYProperty(), 0.5);
+                  final KeyFrame boomkf1 = new KeyFrame(Duration.millis(0), boomRotate, alpha, scaX, scaY);
+                  final KeyValue boomRotate2 = new KeyValue(boom.rotateProperty(), rGen.nextInt(100) - 50);
+                  final KeyValue scaX1 = new KeyValue(boom.scaleXProperty(), 1);
+                  final KeyValue scaY1 = new KeyValue(boom.scaleYProperty(), 1);
+                  final KeyValue alpha2 = new KeyValue(boom.opacityProperty(), 0);
+                  final KeyFrame boomkf12 = new KeyFrame(Duration.millis(600), boomRotate2, alpha2, scaX1, scaY1);
+                  tlboom.getKeyFrames().addAll(boomkf1, boomkf12);
+                  tlboom.play();
+                  boom.setTranslateX(rGen.nextInt(300) - 314);
+                  boom.setTranslateY(rGen.nextInt(300) - 314);
+                  p.getChildren().add(boom);
+               }               
                pieceIndex = pieceIndex + 1;
             }   
          }

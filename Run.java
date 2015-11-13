@@ -14,6 +14,11 @@ import javafx.geometry.Insets;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.media.AudioClip;
+import javafx.scene.text.Font;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import java.util.Random;
 
 public class Run extends Application
@@ -25,7 +30,7 @@ public class Run extends Application
    private int[] yPosition = {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220};
    private static ImageView[] pieces = new ImageView[48];
    private Label[] response = new Label[12];
-   private Label instructions = new Label("Press a key corresponding to the first letter of the color, you want to insert. Press n to start a new game. \nAvailable colors: Red, Green, Blue, Orange, Purple, Yellow");
+   private Label instructions = new Label("Press a key corresponding to the first letter of the color, you want to insert. Press N to start a new game. \nAvailable colors: Red, Green, Blue, Orange, Purple, Yellow");
    private ImageView ib;
    private ImageView im;
    
@@ -65,13 +70,14 @@ public class Run extends Application
       ib.setImage(DrawGraphics.board());
       im.setEffect(d);
       im.setImage(DrawGraphics.marker());
-      im.setLayoutX(xPosition[pieceNumber]);
-      im.setLayoutY(yPosition[board.getTurn()]);
+      im.setTranslateX(xPosition[pieceNumber]);
+      im.setTranslateY(yPosition[board.getTurn()]);
       
       ib.setLayoutX(0);
       ib.setLayoutY(0);
       
       instructions.setWrapText(true);
+      instructions.setFont(new Font("arial", 10));
       
       board.generateAnswer();
       
@@ -85,6 +91,7 @@ public class Run extends Application
          response[i].setLayoutX(130);
          response[i].setLayoutY(20 * i);
          response[i].setEffect(d);
+         response[i].setFont(new Font("arial", 12));
          p.getChildren().add(response[i]);
       } 
       
@@ -151,8 +158,19 @@ public class Run extends Application
                   }   
                   pieces[i] = null;
                }
-               im.setLayoutX(xPosition[pieceNumber]);
-               im.setLayoutY(yPosition[board.getTurn()]);
+               final Timeline tl2Marker = new Timeline();
+               tl2Marker.setCycleCount(1);
+               tl2Marker.setAutoReverse(false);
+               double xPos2 = xPosition[pieceNumber];
+               double yPos2 = yPosition[board.getTurn()];
+               final KeyValue kv2m01 = new KeyValue(im.translateXProperty(), im.getTranslateX());
+               final KeyValue kv2m02 = new KeyValue(im.translateYProperty(), im.getTranslateY());
+               final KeyFrame kf2m = new KeyFrame(Duration.millis(0), kv2m01, kv2m02);
+               final KeyValue kv2m12 = new KeyValue(im.translateXProperty(), xPos2);
+               final KeyValue kv2m11 = new KeyValue(im.translateYProperty(), yPos2);
+               final KeyFrame kf2m1 = new KeyFrame(Duration.millis(200), kv2m11, kv2m12);
+               tl2Marker.getKeyFrames().addAll(kf2m, kf2m1);
+               tl2Marker.play();
                pieceIndex = 0;
                isAKey = true;
                won = false;
@@ -161,6 +179,19 @@ public class Run extends Application
             {  
                //Thread t = new Thread(new MovePiece(pieces[pieceIndex], yPosition[board.getTurn()]));
                //t.start();
+               
+               final Timeline tl = new Timeline();
+               tl.setCycleCount(1);
+               tl.setAutoReverse(false);
+               double position = pieces[pieceIndex].getTranslateY();
+               final KeyValue kv01 = new KeyValue(pieces[pieceIndex].opacityProperty(), 0);
+               final KeyValue kv02 = new KeyValue(pieces[pieceIndex].translateYProperty(), position - 10);
+               final KeyFrame kf = new KeyFrame(Duration.millis(0), kv01, kv02);
+               final KeyValue kv12 = new KeyValue(pieces[pieceIndex].translateYProperty(), position);
+               final KeyValue kv11 = new KeyValue(pieces[pieceIndex].opacityProperty(), 1);
+               final KeyFrame kf1 = new KeyFrame(Duration.millis(200), kv11, kv12);
+               tl.getKeyFrames().addAll(kf, kf1);
+               tl.play();
                pieces[pieceIndex].setEffect(d);
                pieces[pieceNumber + 4 * board.getTurn()].setLayoutX(xPosition[pieceNumber]);
                pieces[pieceNumber + 4 * board.getTurn()].setLayoutY(yPosition[board.getTurn()]);
@@ -188,8 +219,19 @@ public class Run extends Application
                }
                if(board.getTurn() < 12)
                {
-                  im.setLayoutX(xPosition[pieceNumber]);
-                  im.setLayoutY(yPosition[board.getTurn()]);
+                  final Timeline tlMarker = new Timeline();
+                  tlMarker.setCycleCount(1);
+                  tlMarker.setAutoReverse(false);
+                  double xPos = xPosition[pieceNumber];
+                  double yPos = yPosition[board.getTurn()];
+                  final KeyValue kvm01 = new KeyValue(im.translateXProperty(), im.getTranslateX());
+                  final KeyValue kvm02 = new KeyValue(im.translateYProperty(), im.getTranslateY());
+                  final KeyFrame kfm = new KeyFrame(Duration.millis(0), kvm01, kvm02);
+                  final KeyValue kvm12 = new KeyValue(im.translateXProperty(), xPos);
+                  final KeyValue kvm11 = new KeyValue(im.translateYProperty(), yPos);
+                  final KeyFrame kfm1 = new KeyFrame(Duration.millis(200), kvm11, kvm12);
+                  tlMarker.getKeyFrames().addAll(kfm, kfm1);
+                  tlMarker.play();
                }   
                else
                {
